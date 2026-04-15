@@ -22,10 +22,10 @@ When you later install and wire real `crewai` and `autogen`, you can replace the
 ## Quick start
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+py -m venv .venv
+.venv/bin/activate
 pip install -r requirements.txt
-python app.py
+py app.py
 ```
 
 ## Optional real frameworks

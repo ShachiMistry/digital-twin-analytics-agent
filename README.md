@@ -1,124 +1,48 @@
-# 🦾 Digital Twin Analytics Agent
+# digital-twin-analytics-agent
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![CrewAI](https://img.shields.io/badge/Orchestration-CrewAI-red.svg)](https://crewai.com)
-[![AutoGen](https://img.shields.io/badge/Deliberation-AutoGen-green.svg)](https://microsoft.github.io/autogen/)
+A system for monitoring robotic-assisted surgery using telemetry mining and digital twin agents.
 
-> **A constrained, real-time monitoring and decision-support system for robotic-assisted surgery.**
-> This system ingests live robot telemetry and compares it against validated reference trajectories (“Golden Runs”) and multi-dimensional safety envelopes.
+## Architecture
 
----
-
-## 🏛️ Architecture Overview
-
-The system leverages a multi-layer agentic architecture to separate deterministic telemetry processing from complex, corrective action planning.
+This project uses a layered approach to process telemetry and plan corrective actions.
 
 ```mermaid
-graph TD
-    subgraph "Data Ingestion"
-        T[Live Telemetry Stream] --> B[Telemetry Batcher]
-    end
-
-    subgraph "Orchestration Layer (CrewAI)"
-        B --> C1[Phase Detection Agent]
-        C1 --> C2[Baseline Comparison Agent]
-        C2 --> C3[Risk Assessment Agent]
-        C3 --> C4[Safety Envelope Agent]
-    end
-
-    subgraph "Deliberation Layer (AutoGen)"
-        C4 --> D[Action Reasoning Engine]
-        D --> |Corrective Planning| D
-    end
-
-    subgraph "Output & Oversight"
-        D --> AL[Audit Log Service]
-        D --> HR{Human Review Required?}
-        HR -->|Yes| P[Pause & Wait for Approval]
-        HR -->|No| E[Execute Action]
-    end
-
-    style HR fill:#f9f,stroke:#333,stroke-width:2px
-    style HR color:#000
+graph LR
+    T[Telemetry Data] --> C[CrewAI Pipeline]
+    C --> A[AutoGen Reasoning]
+    A --> O[Action/Audit]
 ```
 
----
-
-## ✨ Key Capabilities
-
-### 🔍 Golden Run Comparison
-The agent continuously mines telemetry to ensure alignment with a **Golden Run**—a validated, high-performance reference trajectory. Any deviation in torque, vibration, or latency triggers immediate re-evaluation.
-
-### 🛡️ Safety Envelopes
-The system monitors multi-dimensional constraints including:
-- **Mechanical Stress Limits**: Preventing tool fatigue.
-- **Joint Torque Thresholds**: Detecting unexpected resistance.
-- **Vibration Signatures**: Identifying potential hardware failure or erratic tissue interaction.
-- **Thermal & Latency Limits**: Ensuring operative environment stability.
-
-### 🧠 Hybrid Agentic Strategy
-- **CrewAI**: Used for the deterministic pipeline where tasks have a clear, linear dependency.
-- **AutoGen**: Used for "deliberative logic"—where multiple agents (or a single reasoning engine) must simulate the outcomes of various corrective actions before committing to a plan.
+### Flow
+1. **Telemetry**: Raw data from robot sensors.
+2. **CrewAI**: Orchestrates phase detection, baseline comparison, risk assessment, and safety checks.
+3. **AutoGen**: Handles deliberative reasoning for complex action planning.
+4. **Audit**: Saves the final state and action plans for review.
 
 ---
 
-## 🚀 Quick Start
-
-### Prerequisites
-- Python 3.9 or higher
-- (Optional) OpenAI API Key for full LLM features
-
-### Installation
+## Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/ShachiMistry/digital-twin-analytics-agent.git
-cd digital-twin-analytics-agent
-
-# Set up virtual environment
+# Setup
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
+source .venv/bin/activate
 pip install -r requirements.txt
-```
 
-### Running the Demo
-The project includes **framework stubs**, allowing you to run the end-to-end workflow immediately without waiting for CrewAI or AutoGen environment setups.
-
-```bash
+# Run demo
 python app.py
 ```
 
----
+## Project Layout
 
-## 📂 Project Structure
-
-```text
-digital_twin_ai_starter/
-├── app.py                  # entry point & main workflow driver
-├── config.py               # global system configurations
-├── framework_stubs.py      # compatibility wrappers for CrewAI/AutoGen
-├── domain/                 # Core logic & data models
-│   ├── models.py           # Telemetry & Workflow state definitions
-│   └── audit.py            # Audit log persistence service
-├── crews/                  # CrewAI agents & task definitions
-│   └── telemetry_crew.py   # Telemetry processing pipeline
-├── autogen_layer/          # AutoGen deliberation logic
-│   └── group_chat.py       # Reasoning engine & corrective planning
-├── orchestrator/           # High-level workflow management
-│   └── workflow.py         # The DigitalTwinWorkflow engine
-└── tests/                  # Unit and integration tests
-```
+- `app.py`: Entry point.
+- `domain/`: Core logic and models.
+- `crews/`: Telemetry processing agents.
+- `autogen_layer/`: Decision making agents.
+- `orchestrator/`: Workflow manager.
+- `framework_stubs.py`: Mock frames for local execution.
 
 ---
 
-## 📜 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-> [!TIP]
-> **Switching to Real Frameworks:**
-> The `framework_stubs.py` file acts as a shim. To transition to production-grade CrewAI or AutoGen, simply update the imports in the stubs to point to the real libraries. The core domain structure remains stable.
+## License
+MIT
